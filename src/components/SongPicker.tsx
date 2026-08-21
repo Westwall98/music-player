@@ -336,9 +336,7 @@ function SongPicker({
   songs,
   currentSong,
   open,
-  loading,
   onClose,
-  onReload,
   onSelect,
 }: Props) {
 
