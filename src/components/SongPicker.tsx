@@ -42,14 +42,34 @@ const coverUrlCache =
 
 
 /*
- * 已经开始预加载的图片。
+ * 封面失败后的重试间隔。
+ *
+ * 第一次失败：
+ *   2 秒后重试
+ *
+ * 第二次失败：
+ *   5 秒后重试
+ *
+ * 第三次失败：
+ *   15 秒后重试
+ *
+ * 第三次仍然失败后停止。
  */
-const coverPreloadCache =
-  new Set<string>();
+const coverRetryDelays = [
+  2000,
+  5000,
+  15000,
+];
 
 
 /*
  * 获取封面 URL。
+ *
+ * 这里仍然请求 160px 封面。
+ *
+ * 注意：
+ * 这只是 SongPicker 的缩略图。
+ * 不会影响主播放器的大图。
  */
 function getCoverUrl(
   api: NavidromeAPI,
@@ -81,25 +101,233 @@ function getCoverUrl(
 
 
 /*
- * 预加载图片。
+ * 懒加载封面。
+ *
+ * 只有当封面接近可视区域时，
+ * 才真正创建 <img> 并发起请求。
  */
-function preloadCover(
-  url: string,
-) {
-  if (
-    coverPreloadCache.has(url)
-  ) {
-    return;
-  }
+function LazyCover({
+  src,
+}: {
+  src: string;
+}) {
 
-  coverPreloadCache.add(url);
+  /*
+   * 外层元素。
+   *
+   * IntersectionObserver
+   * 观察的就是它。
+   */
+  const wrapperRef =
+    useRef<HTMLDivElement | null>(
+      null,
+    );
 
-  const image =
-    new Image();
 
-  image.decoding = "async";
+  /*
+   * 是否已经进入预加载区域。
+   */
+  const [visible, setVisible] =
+    useState(false);
 
-  image.src = url;
+
+  /*
+   * 当前重试次数。
+   */
+  const [retryCount, setRetryCount] =
+    useState(0);
+
+
+  /*
+   * 是否已经加载成功。
+   */
+  const [loaded, setLoaded] =
+    useState(false);
+
+
+  /*
+   * 是否已经最终失败。
+   */
+  const [failed, setFailed] =
+    useState(false);
+
+
+  /*
+   * 当前 retry timeout。
+   */
+  const retryTimeoutRef =
+    useRef<number | null>(null);
+
+
+  /*
+   * IntersectionObserver。
+   *
+   * rootMargin 300px：
+   * 距离屏幕约 300px 时提前加载。
+   */
+  useEffect(() => {
+
+    const element =
+      wrapperRef.current;
+
+    if (!element) {
+      return;
+    }
+
+
+    /*
+     * 如果已经进入过预加载区域，
+     * 不需要再次观察。
+     */
+    if (visible) {
+      return;
+    }
+
+
+    const observer =
+      new IntersectionObserver(
+        ([entry]) => {
+
+          if (
+            entry.isIntersecting
+          ) {
+            setVisible(true);
+
+            observer.disconnect();
+          }
+        },
+        {
+          rootMargin: "300px",
+        },
+      );
+
+
+    observer.observe(element);
+
+
+    return () => {
+      observer.disconnect();
+    };
+
+  }, [
+    visible,
+  ]);
+
+
+  /*
+   * 组件卸载时清理 retry timer。
+   */
+  useEffect(() => {
+
+    return () => {
+
+      if (
+        retryTimeoutRef.current !== null
+      ) {
+        window.clearTimeout(
+          retryTimeoutRef.current,
+        );
+
+        retryTimeoutRef.current =
+          null;
+      }
+
+    };
+
+  }, []);
+
+
+  /*
+   * src 改变时重置图片状态。
+   */
+  useEffect(() => {
+
+    setRetryCount(0);
+
+    setLoaded(false);
+
+    setFailed(false);
+
+  }, [
+    src,
+  ]);
+
+
+  /*
+   * 图片加载失败。
+   *
+   * 这里无法直接知道 HTTP 是
+   * 429 / 503 / 404。
+   *
+   * 所以只针对“图片请求失败”
+   * 做有限次数的重试。
+   */
+  const handleError =
+    () => {
+
+      /*
+       * 已经达到最大重试次数。
+       */
+      if (
+        retryCount >=
+        coverRetryDelays.length
+      ) {
+        setFailed(true);
+
+        return;
+      }
+
+
+      const delay =
+        coverRetryDelays[
+          retryCount
+        ];
+
+
+      retryTimeoutRef.current =
+        window.setTimeout(() => {
+
+          setRetryCount(
+            (count) =>
+              count + 1,
+          );
+
+          retryTimeoutRef.current =
+            null;
+
+        }, delay);
+    };
+
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="picker-cover"
+    >
+
+      {visible && !failed && (
+
+        <img
+          key={`${src}:${retryCount}`}
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onLoad={() =>
+            setLoaded(true)
+          }
+          onError={handleError}
+          className={
+            loaded
+              ? "loaded"
+              : ""
+          }
+        />
+
+      )}
+
+    </div>
+  );
 }
 
 
@@ -108,7 +336,9 @@ function SongPicker({
   songs,
   currentSong,
   open,
+  loading,
   onClose,
+  onReload,
   onSelect,
 }: Props) {
 
@@ -158,6 +388,7 @@ function SongPicker({
    * 和搜索状态。
    */
   useEffect(() => {
+
     const picker =
       pickerRef.current;
 
@@ -241,7 +472,9 @@ function SongPicker({
       });
     }
 
-  }, [open]);
+  }, [
+    open,
+  ]);
 
 
   /*
@@ -249,6 +482,7 @@ function SongPicker({
    * 自动 focus 输入框。
    */
   useEffect(() => {
+
     if (
       !open ||
       !searchMode
@@ -256,9 +490,11 @@ function SongPicker({
       return;
     }
 
+
     requestAnimationFrame(() => {
       searchInputRef.current?.focus();
     });
+
   }, [
     open,
     searchMode,
@@ -266,26 +502,32 @@ function SongPicker({
 
 
   /*
-   * songs 改变时重新计算封面。
+   * songs 改变时计算封面 URL。
+   *
+   * 注意：
+   *
+   * 这里只生成 URL。
+   *
+   * 不再调用 new Image()
+   * 或 preloadCover()。
+   *
+   * 因此这里不会产生封面网络请求。
    */
   const songsWithCovers =
     useMemo(() => {
+
       return songs.map(
-        (song) => {
-          const cover =
+        (song) => ({
+          song,
+
+          cover:
             getCoverUrl(
               api,
               song,
-            );
-
-          preloadCover(cover);
-
-          return {
-            song,
-            cover,
-          };
-        },
+            ),
+        }),
       );
+
     }, [
       api,
       songs,
@@ -309,9 +551,11 @@ function SongPicker({
           .trim()
           .toLocaleLowerCase();
 
+
       if (!query) {
         return songsWithCovers;
       }
+
 
       return songsWithCovers.filter(
         ({
@@ -323,15 +567,18 @@ function SongPicker({
               ?.toLocaleLowerCase() ??
             "";
 
+
           const artist =
             song.artist
               ?.toLocaleLowerCase() ??
             "";
 
+
           const album =
             song.album
               ?.toLocaleLowerCase() ??
             "";
+
 
           return (
             title.includes(query) ||
@@ -361,12 +608,14 @@ function SongPicker({
     () => {
 
       if (searchMode) {
+
         setSearchText("");
 
         setSearchMode(false);
 
         return;
       }
+
 
       setSearchMode(true);
     };
@@ -384,6 +633,7 @@ function SongPicker({
       <div className="picker-header">
 
         <div className="picker-title">
+
           <strong>
             Library
           </strong>
@@ -393,6 +643,7 @@ function SongPicker({
               ? `${filteredSongs.length} 首结果`
               : `${songs.length} 首歌曲`}
           </span>
+
         </div>
 
 
@@ -400,29 +651,40 @@ function SongPicker({
 
           <div
             className={`picker-search-wrap ${
-              searchMode ? "search-open" : ""
+              searchMode
+                ? "search-open"
+                : ""
             }`}
           >
+
             <div className="picker-search">
+
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchText}
                 onChange={(event) =>
-                  setSearchText(event.target.value)
+                  setSearchText(
+                    event.target.value,
+                  )
                 }
                 id="search-input"
                 autoComplete="off"
               />
+
 
               <button
                 className="picker-search-button"
                 onClick={toggleSearch}
                 type="button"
               >
+
                 <Search size={18} />
+
               </button>
+
             </div>
+
           </div>
 
 
@@ -431,7 +693,9 @@ function SongPicker({
             onClick={onClose}
             type="button"
           >
+
             <X size={20} />
+
           </button>
 
         </div>
@@ -459,6 +723,7 @@ function SongPicker({
                 song.id ===
                 currentSong?.id;
 
+
               return (
                 <button
                   key={song.id}
@@ -473,12 +738,10 @@ function SongPicker({
                   type="button"
                 >
 
-                  <img
+                  <LazyCover
                     src={cover}
-                    alt=""
-                    loading="eager"
-                    decoding="async"
                   />
+
 
                   <div>
 
@@ -497,6 +760,7 @@ function SongPicker({
               );
             },
           )
+
         )}
 
       </div>
@@ -512,6 +776,7 @@ export default React.memo(
     previous,
     next,
   ) => {
+
     return (
       previous.api === next.api &&
       previous.songs === next.songs &&
@@ -521,5 +786,6 @@ export default React.memo(
       previous.loading ===
         next.loading
     );
+
   },
 );
