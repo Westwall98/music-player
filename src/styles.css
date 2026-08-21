@@ -1,0 +1,1503 @@
+/* ==================================================
+   Base
+================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    Inter,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  color: #ffffff;
+  background: #050505;
+
+  overflow: hidden;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ==================================================
+   App
+================================================== */
+
+.app {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+
+/* ==================================================
+   Kawarp Background
+================================================== */
+
+.kawarp-background {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #050505;
+}
+
+.kawarp-background canvas {
+  display: block;
+
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.kawarp-dark {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.03) 0%,
+      rgba(0, 0, 0, 0.15) 45%,
+      rgba(0, 0, 0, 0.48) 100%
+    );
+}
+
+.kawarp-placeholder {
+  width: 100%;
+  height: 100%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #303030 0%,
+      #101010 55%,
+      #050505 100%
+    );
+}
+
+
+/* ==================================================
+   Main Player
+================================================== */
+
+.player-page {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    40px
+    30px
+    60px;
+
+  text-align: center;
+}
+
+
+/* ==================================================
+   Album Art
+================================================== */
+
+.album-art-wrapper {
+  width:
+    min(
+      420px,
+      42vh,
+      60vw
+    );
+
+  aspect-ratio: 1 / 1;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 38px;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  background:
+    rgba(0, 0, 0, 0.16);
+
+  box-shadow:
+    0 24px 70px
+    rgba(0, 0, 0, 0.40);
+}
+
+.album-art {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  border-radius: 16px;
+}
+
+
+/* ==================================================
+   Track Info
+================================================== */
+
+.track-info {
+  width:
+    min(
+      600px,
+      90%
+    );
+
+  margin-bottom: 26px;
+
+  text-align: center;
+}
+
+.track-info h1 {
+  margin: 0;
+
+  font-size: 28px;
+
+  line-height: 1.3;
+
+  font-weight: 600;
+
+  letter-spacing: -0.02em;
+
+  color: #ffffff;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  margin-top: 8px;
+
+  font-size: 16px;
+
+  line-height: 1.4;
+
+  font-weight: 400;
+
+  color:
+    rgba(255, 255, 255, 0.82);
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+.track-album {
+  margin-top: 3px;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  font-weight: 400;
+
+  color:
+    rgba(255, 255, 255, 0.52);
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ==================================================
+   Progress
+================================================== */
+
+.progress-container {
+  width:
+    min(
+      460px,
+      63vw,
+      calc(42vh + 40px)
+    );
+}
+
+.progress {
+  display: block;
+
+  width: 100%;
+  height: 4px;
+
+  margin: 0;
+  padding: 0;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  cursor: pointer;
+
+  border: 0;
+  border-radius: 100px;
+
+  outline: none;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.92)
+        var(--progress),
+
+      rgba(255, 255, 255, 0.25)
+        var(--progress)
+    );
+}
+
+
+/* Chrome / Safari */
+
+.progress::-webkit-slider-runnable-track {
+  height: 4px;
+
+  border-radius: 100px;
+
+  background: transparent;
+}
+
+.progress::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+
+  margin-top: -4px;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.3);
+
+  opacity: 0;
+
+  transition:
+    opacity 0.15s ease;
+}
+
+.progress:hover::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+
+/* Firefox */
+
+.progress::-moz-range-track {
+  height: 4px;
+
+  border-radius: 100px;
+
+  background:
+    rgba(255, 255, 255, 0.25);
+}
+
+.progress::-moz-range-progress {
+  height: 4px;
+
+  border-radius: 100px;
+
+  background:
+    rgba(255, 255, 255, 0.92);
+}
+
+.progress::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.3);
+
+  opacity: 0;
+}
+
+.progress:hover::-moz-range-thumb {
+  opacity: 1;
+}
+
+
+/* ==================================================
+   Time
+================================================== */
+
+.time {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 8px;
+
+  font-size: 11px;
+
+  line-height: 1;
+
+  font-weight: 400;
+
+  color:
+    rgba(255, 255, 255, 0.48);
+}
+
+
+/* ==================================================
+   Player Controls
+================================================== */
+
+.controls {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 24px;
+
+  margin-top: 20px;
+}
+
+.controls button {
+  border: 0;
+
+  padding: 0;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  outline: none;
+}
+
+.track-control {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  opacity: 0.78;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.track-control:hover {
+  opacity: 1;
+
+  transform: scale(1.08);
+
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.track-control:active {
+  transform: scale(0.94);
+}
+
+.play-button {
+  width: 54px;
+  height: 54px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #ffffff !important;
+
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.20) !important;
+
+  backdrop-filter:
+    blur(20px);
+
+  -webkit-backdrop-filter:
+    blur(20px);
+
+  box-shadow:
+    0 8px 30px
+    rgba(0, 0, 0, 0.25);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.play-button:hover {
+  transform: scale(1.06);
+
+  background:
+    rgba(255, 255, 255, 0.24);
+}
+
+.play-button:active {
+  transform: scale(0.96);
+}
+
+
+/* ==================================================
+   Library Button
+================================================== */
+
+.library-button {
+  position: fixed;
+
+  z-index: 20;
+
+  top: 28px;
+  right: 28px;
+
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 0;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.15);
+
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  background:
+    rgba(20, 20, 20, 0.32);
+
+  backdrop-filter:
+    blur(25px)
+    saturate(150%);
+
+  -webkit-backdrop-filter:
+    blur(25px)
+    saturate(150%);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.20);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.library-button:hover {
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  transform:
+    translateY(-1px);
+}
+
+.library-button:active {
+  transform:
+    scale(0.94);
+}
+
+
+/* ==================================================
+   Song Picker
+================================================== */
+
+.song-picker {
+  position: fixed;
+
+  z-index: 30;
+
+  top: 14px;
+  right: 14px;
+  bottom: 14px;
+
+  width: 360px;
+
+  max-width:
+    calc(100vw - 28px);
+
+  padding: 20px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 28px;
+
+  background:
+    rgba(18, 18, 18, 0.75);
+
+  backdrop-filter:
+    blur(40px)
+    saturate(150%);
+
+  -webkit-backdrop-filter:
+    blur(40px)
+    saturate(150%);
+
+  box-shadow:
+    -20px 20px 80px
+    rgba(0, 0, 0, 0.45);
+
+  transform:
+    translateX(
+      calc(100% + 30px)
+    );
+
+  transition:
+    transform 0.38s
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.song-picker.open {
+  transform:
+    translateX(0);
+}
+
+
+/* ==================================================
+   Picker Header
+================================================== */
+
+.picker-header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding:
+    0 2px 18px;
+
+  min-width: 0;
+}
+
+.picker-title {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  flex: 1;
+
+  min-width: 0;
+
+  padding-top: 1px;
+}
+
+.picker-title strong {
+  font-size: 20px;
+
+  line-height: 1.2;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.picker-title span {
+  font-size: 13px;
+
+  line-height: 1.2;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  white-space: nowrap;
+}
+
+
+/* ==================================================
+   Picker Actions
+================================================== */
+
+.picker-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 6px;
+
+  flex-shrink: 0;
+
+  min-width: 0;
+}
+
+
+/* ==================================================
+   Picker Action Button
+================================================== */
+
+.picker-action-button {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.picker-action-button:hover {
+  background:
+    rgba(255, 255, 255, 0.15);
+
+  transform:
+    scale(1.04);
+}
+
+.picker-action-button:active {
+  transform:
+    scale(0.94);
+}
+
+.picker-action-button:focus-visible {
+  outline:
+    2px solid
+    rgba(255, 255, 255, 0.65);
+
+  outline-offset: 2px;
+}
+
+
+/* ==================================================
+   Search Capsule
+================================================== */
+
+/*
+ * 搜索框始终占据一个 36x36 的位置。
+ *
+ * 未搜索：
+ *
+ *       [ 🔍 ]
+ *
+ * 搜索：
+ *
+ *   [     Ba     🔍 ]
+ *
+ * right: 0 保证右边的搜索按钮位置不动，
+ * 胶囊只向左展开。
+ */
+
+.picker-search-wrap {
+  position: relative;
+
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+}
+
+.picker-search {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+
+  align-items: center;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.12);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.04);
+
+  transition:
+    width 0.28s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+/*
+ * 搜索打开：
+ * 向左展开。
+ */
+
+.picker-search-wrap.search-open
+  .picker-search {
+  width: 180px;
+
+  background:
+    rgba(255, 255, 255, 0.10);
+
+  border-color:
+    rgba(255, 255, 255, 0.18);
+}
+
+.picker-search:focus-within {
+  background:
+    rgba(255, 255, 255, 0.11);
+
+  border-color:
+    rgba(255, 255, 255, 0.20);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.06);
+}
+
+
+/* ==================================================
+   Search Input
+================================================== */
+
+.picker-search input {
+  flex: 1;
+
+  min-width: 0;
+
+  width: 100%;
+  height: 100%;
+
+  padding:
+    0 0 0 12px;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  line-height: 1;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.12s ease;
+}
+
+
+/*
+ * 展开一点之后再显示输入文字。
+ */
+
+.picker-search-wrap.search-open
+  .picker-search input {
+  opacity: 1;
+
+  transition:
+    opacity 0.16s ease 0.10s;
+}
+
+
+/* ==================================================
+   Search Button
+================================================== */
+
+.picker-search-button {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+
+  
+
+  display: flex;
+
+  place-items: center;
+  justify-content: center;
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  z-index: 2;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.picker-search-button svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  transform: translate(1px, -1px);
+}
+
+.picker-search-button:hover {
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.picker-search-button:active {
+  transform:
+    scale(0.94);
+}
+
+.picker-search-button:focus {
+  outline: none;
+}
+
+
+/* ==================================================
+   Picker List
+================================================== */
+
+.picker-list {
+  height:
+    calc(100% - 65px);
+
+  overflow-y: auto;
+
+  padding-right: 3px;
+}
+
+.picker-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.picker-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.picker-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.20);
+}
+
+.picker-list::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(255, 255, 255, 0.30);
+}
+
+
+/* ==================================================
+   Picker Song
+================================================== */
+
+.picker-song {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 9px;
+
+  margin-bottom: 5px;
+
+  border: 0;
+
+  border-radius: 15px;
+
+  color: #ffffff;
+
+  text-align: left;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.picker-song:hover {
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.picker-song:active {
+  transform:
+    scale(0.985);
+}
+
+.picker-song.active {
+  background:
+    rgba(255, 255, 255, 0.13);
+}
+
+.picker-song:focus-visible {
+  outline:
+    2px solid
+    rgba(255, 255, 255, 0.55);
+
+  outline-offset: -2px;
+}
+
+.picker-song img {
+  width: 54px;
+  height: 54px;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 9px;
+}
+
+.picker-song > div {
+  min-width: 0;
+}
+
+.picker-song strong {
+  display: block;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 14px;
+
+  line-height: 1.3;
+
+  font-weight: 500;
+}
+
+.picker-song span {
+  display: block;
+
+  margin-top: 4px;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  color:
+    rgba(255, 255, 255, 0.50);
+
+  font-size: 12px;
+
+  line-height: 1.3;
+
+  font-weight: 400;
+}
+
+
+/* ==================================================
+   Picker Empty
+================================================== */
+
+.picker-empty {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  height: 120px;
+
+  padding: 20px;
+
+  color:
+    rgba(255, 255, 255, 0.45);
+
+  font-size: 14px;
+
+  text-align: center;
+}
+
+
+/* ==================================================
+   Picker Backdrop
+================================================== */
+
+.picker-backdrop {
+  position: fixed;
+
+  z-index: 25;
+
+  inset: 0;
+
+  background:
+    rgba(0, 0, 0, 0.15);
+
+  backdrop-filter:
+    blur(4px);
+
+  -webkit-backdrop-filter:
+    blur(4px);
+}
+
+
+/* ==================================================
+   Empty Player
+================================================== */
+
+.player-empty {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.empty-content h2 {
+  margin:
+    0 0 8px;
+
+  font-size: 24px;
+
+  font-weight: 500;
+}
+
+.empty-content p {
+  margin: 0;
+
+  color:
+    rgba(255, 255, 255, 0.50);
+
+  font-size: 14px;
+}
+
+
+/* ==================================================
+   Loading
+================================================== */
+
+.loading-screen {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 15px;
+
+  color:
+    rgba(255, 255, 255, 0.65);
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.15);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation:
+    spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+
+/* ==================================================
+   Mobile
+================================================== */
+
+@media (max-width: 700px) {
+
+  .player-page {
+    padding:
+      65px
+      20px
+      35px;
+  }
+
+
+  .album-art-wrapper {
+    width:
+      min(
+        72vw,
+        330px
+      );
+
+    aspect-ratio: 1 / 1;
+
+    margin-bottom: 32px;
+
+    border-radius: 14px;
+  }
+
+
+  .album-art {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    border-radius: 14px;
+  }
+
+
+  .track-info {
+    width: 90%;
+
+    margin-bottom: 20px;
+  }
+
+
+  .track-info h1 {
+    font-size: 22px;
+  }
+
+
+  .track-artist {
+    margin-top: 6px;
+
+    font-size: 14px;
+  }
+
+
+  .track-album {
+    font-size: 12px;
+  }
+
+
+  /*
+   * 移动端进度条：
+   * 比专辑图宽约 40px。
+   */
+  .progress-container {
+    width:
+      min(
+        calc(72vw + 40px),
+        370px
+      );
+  }
+
+
+  .controls {
+    gap: 18px;
+
+    margin-top: 17px;
+  }
+
+
+  .track-control {
+    width: 38px;
+    height: 38px;
+  }
+
+
+  .play-button {
+    width: 50px;
+    height: 50px;
+  }
+
+
+  .library-button {
+    top: 15px;
+    right: 15px;
+
+    width: 46px;
+    height: 46px;
+  }
+
+
+  .song-picker {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    width:
+      min(
+        360px,
+        calc(100vw - 16px)
+      );
+
+    max-width:
+      calc(100vw - 16px);
+
+    border-radius: 24px;
+
+    padding: 18px;
+  }
+
+
+  /* 搜索按钮 */
+
+  .picker-search-wrap {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .picker-search {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .picker-search-wrap.search-open
+    .picker-search {
+    width: 135px;
+  }
+
+
+  .picker-search-button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+  }
+
+  .picker-title span {
+    font-size: 12px;
+  }
+}
+
+
+/* ==================================================
+   Small Mobile
+================================================== */
+
+@media (max-width: 420px) {
+
+  .song-picker {
+    padding: 16px;
+  }
+
+
+  .picker-header {
+    gap: 6px;
+
+    padding:
+      0 2px 16px;
+  }
+
+
+  .picker-actions {
+    gap: 4px;
+  }
+
+
+  .picker-action-button {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  /* 搜索按钮 */
+
+  .picker-search-wrap {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .picker-search {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .picker-search-wrap.search-open
+    .picker-search {
+    width: 120px;
+  }
+
+
+  .picker-search-button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+  }
+
+
+  .picker-title strong {
+    font-size: 18px;
+  }
+
+
+  .picker-title span {
+    font-size: 11px;
+  }
+
+
+  .picker-song {
+    gap: 11px;
+
+    padding: 8px;
+  }
+
+
+  .picker-song img {
+    width: 50px;
+    height: 50px;
+  }
+}
