@@ -38,96 +38,68 @@ export function usePlayer(
       () => {},
     );
 
-  /*
-   * 保存最新歌曲列表。
-   */
+  const previousRef =
+    useRef<() => void>(
+      () => {},
+    );
+  
   const songsRef =
     useRef<Song[]>(songs);
 
-  /*
-   * 保存当前 index。
-   */
   const currentIndexRef =
     useRef(-1);
 
-  /*
-   * 当前歌曲 index。
-   */
   const [
     currentIndex,
     setCurrentIndex,
   ] = useState(-1);
 
-  /*
-   * 是否正在播放。
-   *
-   * 这个状态变化频率很低，
-   * 可以安全地放在 App 层。
-   */
   const [
     playing,
     setPlaying,
   ] = useState(false);
 
-  /*
-   * 当前歌曲总时长。
-   *
-   * duration 只会在加载歌曲/元数据时改变，
-   * 不属于高频状态。
-   */
   const [
     duration,
     setDuration,
   ] = useState(0);
 
-  /*
-   * 当前歌曲。
-   */
   const currentSong =
     currentIndex >= 0 &&
     currentIndex < songs.length
       ? songs[currentIndex]
       : null;
 
-  /*
-   * 保存最新歌曲列表。
-   */
   useEffect(() => {
     songsRef.current = songs;
   }, [songs]);
 
-  /*
-   * 初始化 Audio 事件。
-   *
-   * 注意：
-   * 这里不再 setCurrentTime。
-   *
-   * currentTime 由 Player 组件自己监听 Audio，
-   * 从而避免 timeupdate 导致 App 重渲染。
-   */
   useEffect(() => {
     const audio =
       audioRef.current;
 
     audio.preload = "auto";
 
-    /*
-     * 播放
-     */
     const handlePlay = () => {
       setPlaying(true);
+      if (
+        "mediaSession" in navigator
+      ) {
+        navigator.mediaSession.playbackState =
+          "playing";
+      }
     };
 
-    /*
-     * 暂停
-     */
     const handlePause = () => {
       setPlaying(false);
+      if (
+        "mediaSession" in navigator
+      ) {
+        navigator.mediaSession.playbackState =
+          "paused";
+      }
     };
 
-    /*
-     * 元数据加载完成。
-     */
     const handleLoadedMetadata =
       () => {
         if (
@@ -141,9 +113,6 @@ export function usePlayer(
         }
       };
 
-    /*
-     * 某些浏览器会在后续才确定 duration。
-     */
     const handleDurationChange =
       () => {
         if (
@@ -157,9 +126,6 @@ export function usePlayer(
         }
       };
 
-    /*
-     * 歌曲结束。
-     */
     const handleEnded = () => {
       nextRef.current();
     };
@@ -189,6 +155,43 @@ export function usePlayer(
       handleEnded,
     );
 
+    if (
+      "mediaSession" in navigator
+    ) {
+      navigator.mediaSession.setActionHandler(
+        "play",
+        () => {
+          audio.play().catch((error) => {
+            console.error(
+              "Media Session play 失败:",
+              error,
+            );
+          });
+        },
+      );
+
+      navigator.mediaSession.setActionHandler(
+        "pause",
+        () => {
+          audio.pause();
+        },
+      );
+
+      navigator.mediaSession.setActionHandler(
+        "nexttrack",
+        () => {
+          nextRef.current();
+        },
+      );
+
+      navigator.mediaSession.setActionHandler(
+        "previoustrack",
+        () => {
+          previousRef.current();
+        },
+      );
+    }
+    
     return () => {
       audio.pause();
 
@@ -218,12 +221,77 @@ export function usePlayer(
         "ended",
         handleEnded,
       );
+      if (
+        "mediaSession" in navigator
+      ) {
+        navigator.mediaSession.setActionHandler(
+          "play",
+          null,
+        );
+
+        navigator.mediaSession.setActionHandler(
+          "pause",
+          null,
+        );
+
+        navigator.mediaSession.setActionHandler(
+          "nexttrack",
+          null,
+        );
+
+        navigator.mediaSession.setActionHandler(
+          "previoustrack",
+          null,
+        );
+
+        navigator.mediaSession.metadata =
+          null;
+      }
     };
   }, []);
+  
+  useEffect(() => {
+    if (
+      !currentSong ||
+      !("mediaSession" in navigator)
+    ) {
+      return;
+    }
 
-  /*
-   * 加载当前歌曲。
-   */
+    const artworkUrl =
+      api.getCoverArtUrl(
+        currentSong.coverArt,
+        1000,
+      );
+
+    navigator.mediaSession.metadata =
+      new MediaMetadata({
+        title:
+          currentSong.title ||
+          "未知歌曲",
+
+        artist:
+          currentSong.artist ||
+          "未知艺术家",
+
+        album:
+          currentSong.album ||
+          "",
+
+        artwork: artworkUrl
+          ? [
+              {
+                src: artworkUrl,
+                sizes: "1000x1000",
+              },
+            ]
+          : [],
+      });
+  }, [
+    api,
+    currentSong,
+  ]);
+
   useEffect(() => {
     if (currentSong === null) {
       return;
@@ -244,13 +312,6 @@ export function usePlayer(
     autoplayRef.current =
       false;
 
-    /*
-     * 切歌时重置播放器。
-     *
-     * currentTime 不再由这里控制。
-     * Player 会通过 Audio.currentTime
-     * 自己同步。
-     */
     setDuration(0);
 
     audio.pause();
@@ -525,6 +586,11 @@ export function usePlayer(
       );
     }, []);
 
+  useEffect(() => {
+    previousRef.current =
+      previous;
+  }, [previous]);
+  
   return {
     currentSong,
     currentIndex,
