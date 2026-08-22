@@ -181,6 +181,35 @@ function App() {
     player.currentSong?.coverArt,
   ]);
 
+  useEffect(() => {
+    const song = player.currentSong;
+
+    if (!song) {
+      return;
+    }
+
+    if (!("mediaSession" in navigator)) {
+      return;
+    }
+
+    navigator.mediaSession.metadata =
+      new MediaMetadata({
+        title: song.title,
+        artist: song.artist,
+        album: song.album,
+        artwork: cover
+          ? [
+              {
+                src: cover,
+                sizes: "1000x1000"
+              },
+            ]
+          : [],
+      });
+  }, [
+    player.currentSong,
+    cover,
+  ]);
 
   return (
     <div className="app">
