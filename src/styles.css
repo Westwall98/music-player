@@ -29,7 +29,10 @@ body {
   background: #050505;
 
   overflow: hidden;
-
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -524,7 +527,7 @@ button {
 
 .library-button {
   position: fixed;
-
+  opacity: 0;
   z-index: 20;
 
   top: 28px;
