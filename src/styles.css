@@ -54,7 +54,7 @@ button {
 .app {
   inset: 0;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -152,7 +152,7 @@ button {
   width:
     min(
       420px,
-      42vh,
+      42dvh,
       60vw
     );
 
@@ -275,7 +275,7 @@ button {
     min(
       460px,
       63vw,
-      calc(42vh + 40px)
+      calc(42dvh + 40px)
     );
 }
 
