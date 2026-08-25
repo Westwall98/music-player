@@ -52,9 +52,8 @@ button {
 ================================================== */
 
 .app {
-  inset: 0;
   width: 100%;
-  height: 100dvh;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -125,7 +124,7 @@ button {
   z-index: 2;
 
   width: 100%;
-  height: 100%;
+  height: 100dvh;
 
   display: flex;
 
@@ -136,9 +135,9 @@ button {
   justify-content: center;
 
   padding:
-    40px
-    30px
-    60px;
+    32px
+    20px
+    40px;
 
   text-align: center;
 }
@@ -151,9 +150,9 @@ button {
 .album-art-wrapper {
   width:
     min(
-      420px,
-      42dvh,
-      60vw
+      560px,
+      50dvh,
+      75vw
     );
 
   aspect-ratio: 1 / 1;
@@ -176,7 +175,9 @@ button {
 
   box-shadow:
     0 24px 70px
-    rgba(0, 0, 0, 0.40);
+    rgba(0, 0, 0, 0.32);
+
+  transform: translateZ(0);
 }
 
 .album-art {
@@ -187,7 +188,7 @@ button {
 
   object-fit: contain;
 
-  border-radius: 16px;
+  border-radius: inherit;
 }
 
 
@@ -198,11 +199,12 @@ button {
 .track-info {
   width:
     min(
-      600px,
-      90%
+      560px,
+      50dvh,
+      75vw
     );
 
-  margin-bottom: 26px;
+  margin-bottom: 30px;
 
   text-align: center;
 }
@@ -216,7 +218,7 @@ button {
 
   font-weight: 600;
 
-  letter-spacing: -0.02em;
+  letter-spacing: 0em;
 
   color: #ffffff;
 
@@ -237,7 +239,7 @@ button {
   font-weight: 400;
 
   color:
-    rgba(255, 255, 255, 0.82);
+    rgba(255, 255, 255, 0.62);
 
   overflow: hidden;
 
@@ -247,7 +249,9 @@ button {
 }
 
 .track-album {
-  margin-top: 3px;
+  margin-top: 5px;
+
+  margin-bottom: 8px;
 
   font-size: 14px;
 
@@ -256,7 +260,7 @@ button {
   font-weight: 400;
 
   color:
-    rgba(255, 255, 255, 0.52);
+    rgba(255, 255, 255, 0.62);
 
   overflow: hidden;
 
@@ -273,9 +277,9 @@ button {
 .progress-container {
   width:
     min(
-      460px,
-      63vw,
-      calc(42dvh + 40px)
+      560px,
+      50dvh,
+      75vw
     );
 }
 
@@ -283,7 +287,7 @@ button {
   display: block;
 
   width: 100%;
-  height: 4px;
+  height: 5px;
 
   margin: 0;
   padding: 0;
@@ -308,9 +312,6 @@ button {
         var(--progress)
     );
 }
-
-
-/* Chrome / Safari */
 
 .progress::-webkit-slider-runnable-track {
   height: 4px;
@@ -403,7 +404,7 @@ button {
 
   margin-top: 8px;
 
-  font-size: 11px;
+  font-size: 12px;
 
   line-height: 1;
 
@@ -425,7 +426,7 @@ button {
 
   justify-content: center;
 
-  gap: 24px;
+  gap: 70px;
 
   margin-top: 20px;
 }
@@ -435,6 +436,8 @@ button {
 
   padding: 0;
 
+  fill: #ffffff;
+
   color: #ffffff;
 
   cursor: pointer;
@@ -443,10 +446,12 @@ button {
 }
 
 .track-control {
-  width: 42px;
-  height: 42px;
+  width: 35px;
+  height: 35px;
 
   display: grid;
+
+  shape-rendering: geometricPrecision;
 
   place-items: center;
 
@@ -454,7 +459,7 @@ button {
 
   background: transparent;
 
-  opacity: 0.78;
+  opacity: 0.88;
 
   transition:
     opacity 0.2s ease,
@@ -462,64 +467,26 @@ button {
     background 0.2s ease;
 }
 
-.track-control:hover {
-  opacity: 1;
-
-  transform: scale(1.08);
-
-  background:
-    rgba(255, 255, 255, 0.08);
-}
-
-.track-control:active {
-  transform: scale(0.94);
-}
-
 .play-button {
-  width: 54px;
-  height: 54px;
+  width: 42px;
+  height: 42px;
 
   display: grid;
-
+  
   place-items: center;
+
+  background: transparent;
+
+  shape-rendering: geometricPrecision;
 
   border-radius: 50%;
 
   color: #ffffff !important;
 
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.20) !important;
-
-  backdrop-filter:
-    blur(20px);
-
-  -webkit-backdrop-filter:
-    blur(20px);
-
-  box-shadow:
-    0 8px 30px
-    rgba(0, 0, 0, 0.25);
-
   transition:
     transform 0.2s ease,
     background 0.2s ease;
 }
-
-.play-button:hover {
-  transform: scale(1.06);
-
-  background:
-    rgba(255, 255, 255, 0.24);
-}
-
-.play-button:active {
-  transform: scale(0.96);
-}
-
 
 /* ==================================================
    Library Button
@@ -1080,8 +1047,8 @@ button {
 
 .picker-cover {
   width: 54px;
-  min-width: 54px;
   height: 54px;
+  flex: 0 0 54px;
   overflow: hidden;
   border-radius: 8px;
 }
@@ -1133,7 +1100,6 @@ button {
 
   font-weight: 400;
 }
-
 
 /* ==================================================
    Picker Empty
