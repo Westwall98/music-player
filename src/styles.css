@@ -135,9 +135,9 @@ button {
   justify-content: center;
 
   padding:
-    32px
+    3vh
     20px
-    40px;
+    3vh;
 
   text-align: center;
 }
@@ -164,7 +164,7 @@ button {
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 38px;
+  margin-bottom: 5vh;
 
   overflow: hidden;
 
@@ -204,7 +204,7 @@ button {
       75vw
     );
 
-  margin-bottom: 30px;
+  margin-bottom: 5vh;
 
   text-align: center;
 }
@@ -250,8 +250,6 @@ button {
 
 .track-album {
   margin-top: 5px;
-
-  margin-bottom: 8px;
 
   font-size: 14px;
 
@@ -428,7 +426,7 @@ button {
 
   gap: 70px;
 
-  margin-top: 20px;
+  margin-top: 4vh;
 }
 
 .controls button {
@@ -1101,6 +1099,7 @@ button {
   font-weight: 400;
 }
 
+
 /* ==================================================
    Picker Empty
 ================================================== */
@@ -1237,109 +1236,48 @@ button {
 }
 
 
-/* ==================================================
+/*==================================================
    Mobile
-================================================== */
+==================================================*/
 
 @media (max-width: 700px) {
-
-  .player-page {
-    padding:
-      65px
-      20px
-      35px;
-  }
-
 
   .album-art-wrapper {
     width:
       min(
-        72vw,
-        330px
+        560px,
+        88vw
       );
 
     aspect-ratio: 1 / 1;
 
-    margin-bottom: 32px;
+    margin-bottom: 5vh;
 
-    border-radius: 14px;
   }
-
-
-  .album-art {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-
-    border-radius: 14px;
-  }
-
 
   .track-info {
-    width: 90%;
-
-    margin-bottom: 20px;
+    margin-bottom: 5vh;
   }
-
-
-  .track-info h1 {
-    font-size: 22px;
-  }
-
-
-  .track-artist {
-    margin-top: 6px;
-
-    font-size: 14px;
-  }
-
 
   .track-album {
-    font-size: 12px;
+  margin-top: 8px;
   }
 
-
-  /*
-   * 移动端进度条：
-   * 比专辑图宽约 40px。
-   */
   .progress-container {
-    width:
-      min(
-        calc(72vw + 40px),
-        370px
-      );
+    width: min(
+    560px,
+    50dvh,
+    85vw
+  );
   }
 
+  .library-button {
+    top: calc(20px + env(safe-area-inset-top, 0px));
+    right: 20px;
 
-  .controls {
-    gap: 18px;
-
-    margin-top: 17px;
-  }
-
-
-  .track-control {
-    width: 38px;
-    height: 38px;
-  }
-
-
-  .play-button {
     width: 50px;
     height: 50px;
   }
-
-
-  .library-button {
-    top: calc(15px + env(safe-area-inset-top, 0px));
-    right: 15px;
-
-    width: 46px;
-    height: 46px;
-  }
-
 
   .song-picker {
     top: calc(8px + env(safe-area-inset-top, 0px));
@@ -1349,126 +1287,15 @@ button {
     width:
       min(
         360px,
-        calc(100vw - 16px)
+        calc(100vw - 100px)
       );
 
     max-width:
       calc(100vw - 16px);
 
-    border-radius: 24px;
+    border-radius: 28px;
 
-    padding: 18px;
+    padding: 20px;
   }
 
-
-  /* 搜索按钮 */
-
-  .picker-search-wrap {
-    width: 36px;
-    height: 36px;
-  }
-
-
-  .picker-search {
-    width: 36px;
-    height: 36px;
-  }
-
-
-  .picker-search-wrap.search-open
-    .picker-search {
-    width: 135px;
-  }
-
-
-  .picker-search-button {
-    width: 36px;
-    min-width: 36px;
-    height: 36px;
-  }
-
-  .picker-title span {
-    font-size: 12px;
-  }
-}
-
-
-/* ==================================================
-   Small Mobile
-================================================== */
-
-@media (max-width: 420px) {
-
-  .song-picker {
-    padding: 16px;
-  }
-
-
-  .picker-header {
-    gap: 6px;
-
-    padding:
-      0 2px 16px;
-  }
-
-
-  .picker-actions {
-    gap: 4px;
-  }
-
-
-  .picker-action-button {
-    width: 36px;
-    height: 36px;
-  }
-
-
-  /* 搜索按钮 */
-
-  .picker-search-wrap {
-    width: 36px;
-    height: 36px;
-  }
-
-
-  .picker-search {
-    width: 36px;
-    height: 36px;
-  }
-
-
-  .picker-search-wrap.search-open
-    .picker-search {
-    width: 120px;
-  }
-
-
-  .picker-search-button {
-    width: 36px;
-    min-width: 36px;
-    height: 36px;
-  }
-
-
-  .picker-title strong {
-    font-size: 18px;
-  }
-
-
-  .picker-title span {
-    font-size: 11px;
-  }
-
-
-  .picker-song {
-    gap: 11px;
-
-    padding: 8px;
-  }
-
-
-  .picker-song img {
-    width: 50px;
-    height: 50px;
-  }
 }
