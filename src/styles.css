@@ -152,7 +152,7 @@ button {
     min(
       560px,
       50dvh,
-      75vw
+      88vw
     );
 
   aspect-ratio: 1 / 1;
@@ -249,7 +249,7 @@ button {
 }
 
 .track-album {
-  margin-top: 5px;
+  margin-top: 1vh;
 
   font-size: 14px;
 
@@ -277,7 +277,7 @@ button {
     min(
       560px,
       50dvh,
-      75vw
+      85vw
     );
 }
 
@@ -1242,35 +1242,6 @@ button {
 
 @media (max-width: 700px) {
 
-  .album-art-wrapper {
-    width:
-      min(
-        560px,
-        88vw
-      );
-
-    aspect-ratio: 1 / 1;
-
-    margin-bottom: 5vh;
-
-  }
-
-  .track-info {
-    margin-bottom: 5vh;
-  }
-
-  .track-album {
-  margin-top: 8px;
-  }
-
-  .progress-container {
-    width: min(
-    560px,
-    50dvh,
-    85vw
-  );
-  }
-
   .library-button {
     top: calc(20px + env(safe-area-inset-top, 0px));
     right: 20px;
@@ -1292,10 +1263,6 @@ button {
 
     max-width:
       calc(100vw - 16px);
-
-    border-radius: 28px;
-
-    padding: 20px;
   }
 
 }
