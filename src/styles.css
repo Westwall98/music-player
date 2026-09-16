@@ -1266,3 +1266,99 @@ button {
   }
 
 }
+
+
+@media (max-height: 750px) and (min-aspect-ratio: 3 / 2) {
+
+  .player-page {
+    display: grid;
+
+    grid-template-columns:
+      66vh
+      minmax(0, 1fr);
+
+    grid-template-rows: minmax(0, 1fr);
+
+    align-items: center;
+    justify-items: stretch;
+
+    column-gap: clamp(20px, 6vw, 100px);
+
+    padding:
+        20vh
+        calc(4vw + env(safe-area-inset-right, 0px))
+        20vh
+        calc(4vw + env(safe-area-inset-left, 0px));
+
+    text-align: left;
+  }
+
+  .album-art-wrapper {
+    grid-column: 1;
+    grid-row: 1;
+
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 72px);
+
+    margin: 0;
+
+    align-self: center;
+    justify-self: center;
+  }
+
+  .track-info {
+    grid-column: 2;
+    grid-row: 1;
+
+    width: 100%;
+
+    align-self: start;
+
+    margin: 0;
+    padding-top: 0;
+
+    text-align: left;
+  }
+  
+  .track-info h1 {
+    margin: 0;
+    
+    font-size: 38px;
+  }
+  .track-album {
+    margin-top: 2vh;
+  }
+
+  .track-artist {
+    margin-top: 2vh;
+  }
+
+
+  .progress-container {
+    grid-column: 2;
+    grid-row: 1;
+
+    width: 100%;
+
+    align-self: start;
+
+    margin-top: 42vh;
+    margin-bottom: 0;
+  }
+
+  .controls {
+    grid-column: 2;
+    grid-row: 1;
+
+    justify-content: center;
+    gap: clamp(30px, 9vw, 120px);
+
+    align-self: start;
+
+    margin-top: 52vh;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+}
