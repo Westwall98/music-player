@@ -18,12 +18,62 @@ import SongPicker from "./components/SongPicker";
 
 import { usePlayer } from "./hooks/usePlayer";
 
+function normalizeSearchText(
+  value: string,
+) {
+  return value
+    .trim()
+    .toLocaleLowerCase();
+}
+
+function songMatchesSearch(
+  song: Song,
+  searchText: string,
+) {
+  const query =
+    normalizeSearchText(
+      searchText,
+    );
+
+  if (!query) {
+    return true;
+  }
+
+  const title =
+    song.title
+      ?.toLocaleLowerCase() ?? "";
+
+  const artist =
+    song.artist
+      ?.toLocaleLowerCase() ?? "";
+
+  const album =
+    song.album
+      ?.toLocaleLowerCase() ?? "";
+
+  return (
+    title.includes(query) ||
+    artist.includes(query) ||
+    album.includes(query)
+  );
+}
 
 function App() {
   const api = useMemo(
     () => new NavidromeAPI(),
     [],
   );
+
+  const forcedSearchText =
+    useMemo(() => {
+      return (
+        new URLSearchParams(
+          window.location.search,
+        )
+          .get("s")
+          ?.trim() || ""
+      );
+    }, []);
 
   const [songs, setSongs] =
     useState<Song[]>([]);
@@ -45,13 +95,6 @@ function App() {
     songs,
   );
 
-
-  /*
-   * 加载歌单。
-   *
-   * 每次读取完成后都会重新随机排列
-   * 整个歌单。
-   */
   const loadSongs = async (
     selectFirst = false,
   ) => {
@@ -68,24 +111,25 @@ function App() {
 
       if (!playlistId) {
         throw new Error(
-          "未配置 VITE_NAVIDROME_PLAYLIST_ID",
+          "NO PLAYLIST ID",
         );
       }
 
       const result =
-        await api.getPlaylistSongs(
-          playlistId,
-        );
+        await api.getPlaylistSongs(playlistId,);
 
+      const filtered =
+        forcedSearchText
+          ? result.filter((song) =>
+              songMatchesSearch(
+                song,
+                forcedSearchText,
+              ),
+            )
+          : result;
 
-      /*
-       * Fisher-Yates shuffle
-       *
-       * 使用副本，避免修改 Navidrome
-       * 返回的原始数组。
-       */
       const shuffled = [
-        ...result,
+        ...filtered,
       ];
 
       for (
@@ -278,6 +322,9 @@ function App() {
         }
         open={pickerOpen}
         loading={loading}
+        playMode={
+          player.playMode
+        }
 
         onClose={() =>
           setPickerOpen(false)
@@ -295,6 +342,9 @@ function App() {
 
           setPickerOpen(false);
         }}
+        onTogglePlayMode={
+          player.togglePlayMode
+        }
       />
 
 
