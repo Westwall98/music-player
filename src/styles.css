@@ -470,13 +470,6 @@ button {
     background 0.2s ease;
 }
 
-.track-control:hover {
-  opacity: 1;
-
-  background:
-    rgba(255, 255, 255, 0.10);
-}
-
 .track-control:active {
   transform:
     scale(0.94);
@@ -752,20 +745,6 @@ button {
   transform:
     scale(0.94);
 }
-
-.picker-action-button:focus-visible {
-  outline:
-    2px solid
-    rgba(255, 255, 255, 0.65);
-
-  outline-offset: 2px;
-}
-
-.picker-mode-button.active {
-  background:
-    rgba(255, 255, 255, 0.18);
-}
-
 
 /* ==================================================
    Search Capsule
