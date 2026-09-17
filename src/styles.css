@@ -135,7 +135,7 @@ button {
   justify-content: center;
 
   padding:
-    3vh
+    calc(3vh + env(safe-area-inset-top, 0px))
     20px
     3vh;
 
