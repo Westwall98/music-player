@@ -8,32 +8,29 @@ import {
 import type { Song } from "../types/navidrome";
 import { NavidromeAPI } from "../api/navidrome";
 
+export type PlayMode =
+  | "sequence"
+  | "repeat-one";
+
 export function usePlayer(
   api: NavidromeAPI,
   songs: Song[],
 ) {
-  /*
-   * Audio 实例只创建一次。
-   */
   const audioRef = useRef(
     new Audio(),
   );
 
-  /*
-   * 防止快速切歌时旧请求覆盖新歌曲。
-   */
   const loadIdRef = useRef(0);
 
-  /*
-   * 是否在歌曲加载完成后自动播放。
-   */
   const autoplayRef =
     useRef(false);
 
-  /*
-   * ended 事件需要访问最新的 next。
-   */
   const nextRef =
+    useRef<() => void>(
+      () => {},
+    );
+
+  const sequenceNextRef =
     useRef<() => void>(
       () => {},
     );
@@ -41,6 +38,11 @@ export function usePlayer(
   const previousRef =
     useRef<() => void>(
       () => {},
+    );
+
+  const playModeRef =
+    useRef<PlayMode>(
+      "sequence",
     );
   
   const songsRef =
@@ -60,6 +62,13 @@ export function usePlayer(
   ] = useState(false);
 
   const [
+    playMode,
+    setPlayMode,
+  ] = useState<PlayMode>(
+    "sequence",
+  );
+
+  const [
     duration,
     setDuration,
   ] = useState(0);
@@ -73,6 +82,11 @@ export function usePlayer(
   useEffect(() => {
     songsRef.current = songs;
   }, [songs]);
+
+  useEffect(() => {
+    playModeRef.current =
+      playMode;
+  }, [playMode]);
 
   useEffect(() => {
     const audio =
@@ -127,7 +141,32 @@ export function usePlayer(
       };
 
     const handleEnded = () => {
-      nextRef.current();
+      if (
+        playModeRef.current ===
+        "repeat-one"
+      ) {
+        audio.currentTime = 0;
+
+        audio.play().catch((error) => {
+          if (
+            error instanceof
+              DOMException &&
+            error.name ===
+              "AbortError"
+          ) {
+            return;
+          }
+
+          console.error(
+            "单曲循环播放失败:",
+            error,
+          );
+        });
+
+        return;
+      }
+
+      sequenceNextRef.current();
     };
 
     audio.addEventListener(
@@ -333,10 +372,6 @@ export function usePlayer(
             songToLoad,
           );
 
-        /*
-         * 如果已经切换到其他歌曲，
-         * 当前请求直接丢弃。
-         */
         if (
           cancelled ||
           loadId !==
@@ -407,9 +442,6 @@ export function usePlayer(
     api,
   ]);
 
-  /*
-   * 选择歌曲。
-   */
   const playSong =
     useCallback(
       (
@@ -437,9 +469,6 @@ export function usePlayer(
       [],
     );
 
-  /*
-   * 播放 / 暂停。
-   */
   const togglePlay =
     useCallback(
       async () => {
@@ -477,11 +506,6 @@ export function usePlayer(
       [currentSong],
     );
 
-  /*
-   * 拖动进度条。
-   *
-   * currentTime UI 会由 Player 自己更新。
-   */
   const seek =
     useCallback(
       (value: number) => {
@@ -517,9 +541,6 @@ export function usePlayer(
       [],
     );
 
-  /*
-   * 下一首。
-   */
   const next =
     useCallback(() => {
       const list =
@@ -548,16 +569,43 @@ export function usePlayer(
       );
     }, []);
 
-  /*
-   * 保存最新 next。
-   */
+  const sequenceNext =
+    useCallback(() => {
+      const list =
+        songsRef.current;
+
+      if (list.length === 0) {
+        return;
+      }
+
+      const index =
+        currentIndexRef.current;
+
+      const nextIndex =
+        index + 1 >= list.length
+          ? 0
+          : index + 1;
+
+      autoplayRef.current =
+        true;
+
+      currentIndexRef.current =
+        nextIndex;
+
+      setCurrentIndex(
+        nextIndex,
+      );
+    }, []);
+
   useEffect(() => {
     nextRef.current = next;
   }, [next]);
 
-  /*
-   * 上一首。
-   */
+  useEffect(() => {
+    sequenceNextRef.current =
+      sequenceNext;
+  }, [sequenceNext]);
+
   const previous =
     useCallback(() => {
       const list =
@@ -590,15 +638,32 @@ export function usePlayer(
     previousRef.current =
       previous;
   }, [previous]);
+
+  const togglePlayMode =
+    useCallback(() => {
+      setPlayMode((mode) => {
+        const nextMode =
+          mode === "sequence"
+            ? "repeat-one"
+            : "sequence";
+
+        playModeRef.current =
+          nextMode;
+
+        return nextMode;
+      });
+    }, []);
   
   return {
     currentSong,
     currentIndex,
     playing,
+    playMode,
     duration,
     audioRef,
     playSong,
     togglePlay,
+    togglePlayMode,
     seek,
     next,
     previous,
