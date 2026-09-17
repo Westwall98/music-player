@@ -424,7 +424,12 @@ button {
 
   justify-content: center;
 
-  gap: 70px;
+  gap:
+    clamp(
+      34px,
+      10vw,
+      70px
+    );
 
   margin-top: 4vh;
 }
@@ -463,6 +468,18 @@ button {
     opacity 0.2s ease,
     transform 0.2s ease,
     background 0.2s ease;
+}
+
+.track-control:hover {
+  opacity: 1;
+
+  background:
+    rgba(255, 255, 255, 0.10);
+}
+
+.track-control:active {
+  transform:
+    scale(0.94);
 }
 
 .play-button {
@@ -744,25 +761,16 @@ button {
   outline-offset: 2px;
 }
 
+.picker-mode-button.active {
+  background:
+    rgba(255, 255, 255, 0.18);
+}
+
 
 /* ==================================================
    Search Capsule
 ================================================== */
 
-/*
- * 搜索框始终占据一个 36x36 的位置。
- *
- * 未搜索：
- *
- *       [ 🔍 ]
- *
- * 搜索：
- *
- *   [     Ba     🔍 ]
- *
- * right: 0 保证右边的搜索按钮位置不动，
- * 胶囊只向左展开。
- */
 
 .picker-search-wrap {
   position: relative;
@@ -815,14 +823,9 @@ button {
 }
 
 
-/*
- * 搜索打开：
- * 向左展开。
- */
-
 .picker-search-wrap.search-open
   .picker-search {
-  width: 180px;
+  width: 136px;
 
   background:
     rgba(255, 255, 255, 0.10);
