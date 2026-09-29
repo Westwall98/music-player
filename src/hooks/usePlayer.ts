@@ -158,7 +158,7 @@ export function usePlayer(
           }
 
           console.error(
-            "单曲循环播放失败:",
+            "Play Failed:",
             error,
           );
         });
@@ -300,7 +300,6 @@ export function usePlayer(
     const artworkUrl =
       api.getCoverArtUrl(
         currentSong.coverArt,
-        1000,
       );
 
     navigator.mediaSession.metadata =
@@ -498,7 +497,7 @@ export function usePlayer(
           }
 
           console.error(
-            "播放失败:",
+            "Play Failed:",
             error,
           );
         }
