@@ -101,39 +101,6 @@ export class NavidromeAPI {
     return result as T;
   }
 
-  /**
-   * 测试 Navidrome 是否正常
-   */
-  async ping() {
-    return this.request("ping");
-  }
-
-  /**
-   * 获取随机歌曲
-   */
-  async getRandomSongs(
-    size = 30,
-  ): Promise<Song[]> {
-    const result =
-      await this.request<{
-        randomSongs: {
-          song: Song[];
-        };
-      }>("getRandomSongs", {
-        size,
-      });
-
-    return (
-      result.randomSongs.song || []
-    );
-  }
-
-  /**
-   * 获取播放列表
-   *
-   * playlistId:
-   * Navidrome 播放列表 ID
-   */
   async getPlaylistSongs(
     playlistId: string,
   ): Promise<Song[]> {
@@ -157,12 +124,9 @@ export class NavidromeAPI {
     );
   }
 
-  /**
-   * 获取封面
-   */
   getCoverArtUrl(
     coverArt?: string,
-    size = 800,
+    size?: number,
   ) {
     if (!coverArt) {
       return "";
@@ -172,15 +136,11 @@ export class NavidromeAPI {
       `${this.baseUrl}/rest/getCoverArt.view`,
     );
 
-    url.searchParams.set(
-      "id",
-      coverArt,
-    );
+    url.searchParams.set("id",coverArt,);
 
-    url.searchParams.set(
-      "size",
-      String(size),
-    );
+    if (size !== undefined) {
+      url.searchParams.set("size", String(size));
+    }
 
     url.searchParams.set(
       "u",
@@ -215,10 +175,7 @@ export class NavidromeAPI {
 
     return url.toString();
   }
-
-  /**
-   * 获取歌曲播放地址
-   */
+  
   getStreamUrl(
     song: Song,
   ) {
@@ -263,39 +220,5 @@ export class NavidromeAPI {
     );
 
     return url.toString();
-  }
-
-  /**
-   * 获取歌手
-   */
-  async getArtists() {
-    const result =
-      await this.request<{
-        artists: {
-          index: Array<{
-            artist: Artist[];
-          }>;
-        };
-      }>("getArtists");
-
-    return result.artists.index.flatMap(
-      (group) => group.artist,
-    );
-  }
-
-  /**
-   * 获取专辑
-   */
-  async getAlbum(
-    id: string,
-  ) {
-    const result =
-      await this.request<{
-        album: Album;
-      }>("getAlbum", {
-        id,
-      });
-
-    return result.album;
   }
 }
