@@ -169,9 +169,6 @@ export default function Player({
     setCurrentTime(0);
   }, [song?.id]);
 
-  /*
-   * 封面 URL 只有歌曲变化时才重新计算。
-   */
   const cover = useMemo(() => {
     if (!song) {
       return "";
@@ -179,7 +176,6 @@ export default function Player({
 
     return api.getCoverArtUrl(
       song.coverArt,
-      1200,
     );
   }, [
     api,
