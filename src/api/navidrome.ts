@@ -1,9 +1,7 @@
 import SparkMD5 from "spark-md5";
 
 import type {
-  Album,
-  Artist,
-  Song,
+  Song
 } from "../types/navidrome";
 
 const API_VERSION = "1.16.1";
