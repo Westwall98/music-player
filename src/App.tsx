@@ -207,10 +207,6 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  /*
-   * 当前歌曲封面。
-   */
   const cover = useMemo(() => {
     if (!player.currentSong) {
       return undefined;
@@ -218,7 +214,6 @@ function App() {
 
     return api.getCoverArtUrl(
       player.currentSong.coverArt,
-      1000,
     );
   }, [
     api,
