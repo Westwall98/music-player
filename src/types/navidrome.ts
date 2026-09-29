@@ -23,26 +23,3 @@ export interface Song {
 
   contentType?: string;
 }
-
-export interface Artist {
-  id: string;
-  name: string;
-  albumCount?: number;
-  songCount?: number;
-}
-
-export interface Album {
-  id: string;
-
-  name: string;
-
-  artist?: string;
-
-  albumArtist?: string;
-
-  coverArt?: string;
-
-  songCount?: number;
-
-  song?: Song[];
-}
